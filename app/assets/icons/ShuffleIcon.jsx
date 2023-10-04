@@ -1,5 +1,5 @@
 import * as React from "react";
-const ShuffleIcon = ({ className, ...rest }) => (
+const ShuffleIcon = ({ color, className, ...rest }) => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
     width={40}
@@ -9,7 +9,7 @@ const ShuffleIcon = ({ className, ...rest }) => (
     className={`w-auto h-auto cursor-pointer ${className}`}
   >
     <path
-      stroke="#fff"
+      stroke={`${color}`}
       strokeLinecap="round"
       strokeLinejoin="round"
       strokeWidth={2}
