@@ -12,7 +12,7 @@
 }
 
 .rotate-animation {
-  animation: rotate 10s infinite;
+  animation: rotate 10s linear infinite;
 }
 input[type="range"] {
   -webkit-appearance: none !important;

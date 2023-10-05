@@ -34,20 +34,24 @@ const MusicRender = () => {
   useEffect(() => {
     const audioElement = audioRef.current;
 
-    // const handleAudioEnd = () => {
-    //   if (isRepeat) {
-    //     audioElement.currentTime = 0;
-    //     audioElement.play();
-    //   } else if (isShuffle) {
-    //     const randomIndex = getRandomIndex(currentIndex, totalIndex);
-    //     setCurrentIndex(randomIndex);
-    //     audioElement.play();
-    //   } else {
-    //     const nextIndex = (currentIndex + 1) % playList.length;
-    //     setCurrentIndex(nextIndex);
-    //     audioElement.play();
-    //   }
-    // };
+    const handleAudioEnd = () => {
+      const audioElement = audioRef.current;
+      if (isRepeat) {
+        audioElement.currentTime = 0;
+      } else if (isShuffle) {
+        //select a new random index
+        const randomIndex = getRandomIndex(currentIndex, totalIndex);
+        setCurrentIndex(randomIndex);
+        audioElement.src = playList[randomIndex].path;
+      } else {
+        // Increase currentIndex by 1
+        const nextIndex = (currentIndex + 1) % playList.length;
+        setCurrentIndex(nextIndex);
+        audioElement.src = playList[nextIndex].path;
+      }
+      setIsPlaying(true);
+      audioElement.play();
+    };
 
     const handleTimeUpdate = () => {
       setCurrentTime(audioElement.currentTime);
@@ -58,11 +62,11 @@ const MusicRender = () => {
       setProgress(newProgress);
     };
 
-    audioElement.addEventListener("ended", handlePlayForward);
+    audioElement.addEventListener("ended", handleAudioEnd);
     audioElement.addEventListener("timeupdate", handleTimeUpdate);
 
     return () => {
-      audioElement.removeEventListener("ended", handlePlayForward);
+      audioElement.removeEventListener("ended", handleAudioEnd);
       audioElement.removeEventListener("timeupdate", handleTimeUpdate);
     };
   }, [currentIndex, isRepeat, isShuffle, totalIndex]);
@@ -80,12 +84,12 @@ const MusicRender = () => {
   const handlePlayBack = () => {
     const audioElement = audioRef.current;
     if (isShuffle) {
-      // When isShuffle = true, select a new random index
+      //select a new random index
       const randomIndex = getRandomIndex(currentIndex, totalIndex);
       setCurrentIndex(randomIndex);
       audioElement.src = playList[randomIndex].path;
     } else {
-      // Decrease currentIndex by 1 if Shuffle is not used
+      // Decrease currentIndex by 1
       const prevIndex = (currentIndex - 1 + playList.length) % playList.length;
       setCurrentIndex(prevIndex);
       audioElement.src = playList[prevIndex].path;
@@ -106,12 +110,12 @@ const MusicRender = () => {
   const handlePlayForward = () => {
     const audioElement = audioRef.current;
     if (isShuffle) {
-      // When isShuffle = true, select a new random index
+      //select a new random index
       const randomIndex = getRandomIndex(currentIndex, totalIndex);
       setCurrentIndex(randomIndex);
       audioElement.src = playList[randomIndex].path;
     } else {
-      // Increase currentIndex by 1 if Shuffle is not used
+      // Increase currentIndex by 1
       const nextIndex = (currentIndex + 1) % playList.length;
       setCurrentIndex(nextIndex);
       audioElement.src = playList[nextIndex].path;
@@ -145,12 +149,17 @@ const MusicRender = () => {
   return (
     <React.Fragment className="flex flex-col justify-between items-center">
       <div
-        id="musicImage"
-        style={{
-          backgroundImage: `url(${playList[currentIndex].img})`,
-        }}
-        className={`w-[270px] h-[270px] rounded-full bg-[#fea5af3c] bg-cover rotate-animation `}
-      ></div>
+        className={`w-[270px] h-[270px] rounded-full bg-[#fea5af3c] bg-cover rotate-animation flex items-center justify-center `}
+      >
+        <div
+          id="musicImage"
+          style={{
+            backgroundImage: `url(${playList[currentIndex].img})`,
+          }}
+          className={`w-[250px] h-[250px] rounded-full bg-[#fea5af3c] bg-cover rotate-animation `}
+        ></div>
+      </div>
+
       <div className="w-full min-h-[105px] flex items-center justify-between">
         <div className="flex flex-col items-start">
           <h2 className="text-white font-bold text-3xl">
