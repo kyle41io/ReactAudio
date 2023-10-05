@@ -11,7 +11,7 @@ import Rectangle5 from "@/app/assets/icons/Rectangle 5.png";
 const MusicPlayer = () => {
   return (
     <div
-      className="w-[430px] h-[932px] mt-[87px] absolute z-10 flex flex-col items-center justify-between bg-[#430020] rounded-3xl bg-[url('../assets/icons/Rectangle 5.png')]"
+      className="w-[430px] h-[932px] mt-[87px] absolute z-10 flex flex-col items-center justify-between bg-[#430020] rounded-3xl bg-[url('../assets/icons/Rectangle 5.png')] overflow-hidden"
       style={{ boxShadow: "8px 8px 24px 0px rgba(0, 0, 0, 0.50)" }}
     >
       <Image src={Rectangle5} className="absolute inset-y-64 inset-x-64 z-0" />
