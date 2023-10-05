@@ -148,9 +148,7 @@ const MusicRender = () => {
 
   return (
     <React.Fragment className="flex flex-col justify-between items-center">
-      <div
-        className={`w-[270px] h-[270px] rounded-full bg-[#fea5af3c] bg-cover rotate-animation flex items-center justify-center `}
-      >
+      <div className=" flex justify-center items-center w-[270px] h-[270px] rounded-full bg-[#fea5af3c]">
         <div
           id="musicImage"
           style={{
