@@ -12,34 +12,58 @@ const MusicRender = () => {
   const [isShuffle, setIsShuffle] = useState(false);
   const [isRepeat, setIsRepeat] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
-  const [currentIndex, setCurrentIndex] = useState(7);
+  const [currentTime, setCurrentTime] = useState(0);
+  const [progress, setProgress] = useState(0);
+  const [timeLeft, setTimeLeft] = useState(0);
+
+  // const [timeAudio, setTimeAudio] = useState();
+  const [currentIndex, setCurrentIndex] = useState(3);
   const totalIndex = playList.length - 1;
   const audioSource = playList[currentIndex].path;
 
   const audioRef = useRef(null);
+  useEffect(() => {
+    const element = document.getElementById("musicImage");
+    if (isPlaying) {
+      element.style.animationPlayState = "running";
+    } else {
+      element.style.animationPlayState = "paused";
+    }
+  }, [isPlaying]);
 
   useEffect(() => {
     const audioElement = audioRef.current;
 
-    const handleAudioEnd = () => {
-      if (isRepeat) {
-        audioElement.currentTime = 0;
-        audioElement.play();
-      } else if (isShuffle) {
-        const randomIndex = getRandomIndex(currentIndex, totalIndex);
-        setCurrentIndex(randomIndex);
-        audioElement.play();
-      } else {
-        const nextIndex = (currentIndex + 1) % playList.length;
-        setCurrentIndex(nextIndex);
-        audioElement.play();
-      }
+    // const handleAudioEnd = () => {
+    //   if (isRepeat) {
+    //     audioElement.currentTime = 0;
+    //     audioElement.play();
+    //   } else if (isShuffle) {
+    //     const randomIndex = getRandomIndex(currentIndex, totalIndex);
+    //     setCurrentIndex(randomIndex);
+    //     audioElement.play();
+    //   } else {
+    //     const nextIndex = (currentIndex + 1) % playList.length;
+    //     setCurrentIndex(nextIndex);
+    //     audioElement.play();
+    //   }
+    // };
+
+    const handleTimeUpdate = () => {
+      setCurrentTime(audioElement.currentTime);
+      setTimeLeft(audioElement.duration - audioElement.currentTime);
+
+      const newProgress =
+        (audioElement.currentTime / audioElement.duration) * 100;
+      setProgress(newProgress);
     };
 
-    audioElement.addEventListener("ended", handleAudioEnd);
+    audioElement.addEventListener("ended", handlePlayForward);
+    audioElement.addEventListener("timeupdate", handleTimeUpdate);
 
     return () => {
-      audioElement.removeEventListener("ended", handleAudioEnd);
+      audioElement.removeEventListener("ended", handlePlayForward);
+      audioElement.removeEventListener("timeupdate", handleTimeUpdate);
     };
   }, [currentIndex, isRepeat, isShuffle, totalIndex]);
 
@@ -59,6 +83,7 @@ const MusicRender = () => {
       // When isShuffle = true, select a new random index
       const randomIndex = getRandomIndex(currentIndex, totalIndex);
       setCurrentIndex(randomIndex);
+      audioElement.src = playList[randomIndex].path;
     } else {
       // Decrease currentIndex by 1 if Shuffle is not used
       const prevIndex = (currentIndex - 1 + playList.length) % playList.length;
@@ -68,6 +93,15 @@ const MusicRender = () => {
     setIsPlaying(true);
     audioElement.play();
   };
+  const formatTime = (time) => {
+    const minutes = Math.floor(time / 60);
+    const seconds = Math.floor(time % 60);
+
+    const formattedMinutes = String(minutes).padStart(2, "0");
+    const formattedSeconds = String(seconds).padStart(2, "0");
+
+    return time ? `${formattedMinutes}:${formattedSeconds}` : "--:--";
+  };
 
   const handlePlayForward = () => {
     const audioElement = audioRef.current;
@@ -75,6 +109,7 @@ const MusicRender = () => {
       // When isShuffle = true, select a new random index
       const randomIndex = getRandomIndex(currentIndex, totalIndex);
       setCurrentIndex(randomIndex);
+      audioElement.src = playList[randomIndex].path;
     } else {
       // Increase currentIndex by 1 if Shuffle is not used
       const nextIndex = (currentIndex + 1) % playList.length;
@@ -82,7 +117,6 @@ const MusicRender = () => {
       audioElement.src = playList[nextIndex].path;
     }
     setIsPlaying(true);
-
     audioElement.play();
   };
 
@@ -111,12 +145,11 @@ const MusicRender = () => {
   return (
     <React.Fragment className="flex flex-col justify-between items-center">
       <div
+        id="musicImage"
         style={{
           backgroundImage: `url(${playList[currentIndex].img})`,
-          transform: isPlaying ? "rotate(360deg)" : "",
-          transition: isPlaying ? "transform 10s linear" : "none",
         }}
-        className="w-[270px] h-[270px] rounded-full bg-[#fea5af3c] bg-cover "
+        className={`w-[270px] h-[270px] rounded-full bg-[#fea5af3c] bg-cover rotate-animation `}
       ></div>
       <div className="w-full min-h-[105px] flex items-center justify-between">
         <div className="flex flex-col items-start">
@@ -135,16 +168,26 @@ const MusicRender = () => {
       <div className="w-full flex flex-col items-center">
         <input
           id="progress"
-          class="text-white w-[382px] h-2 rounded-lg progress"
+          className="text-red-600 w-96 h-2 rounded-full bg-blue-500 bg-opacity-50 focus:outline-none focus:bg-opacity-100 cursor-pointer"
           type="range"
-          value="0"
+          value={progress}
           step="1"
           min="0"
           max="100"
-        ></input>
+          onChange={(e) => {
+            const newProgress = parseInt(e.target.value);
+            const newTime = (newProgress / 100) * audioRef.current.duration;
+            audioRef.current.currentTime = newTime;
+            setProgress(newProgress);
+          }}
+        />
         <div className="w-full flex items-center justify-between mt-5 px-3">
-          <p className="text-[#fea5af87] text-xl font-medium">1:11</p>
-          <p className="text-[#fea5af87] text-xl font-medium">2:22</p>
+          <p className="text-[#fea5af87] text-xl font-medium">
+            {formatTime(currentTime)}
+          </p>
+          <p className="text-[#fea5af87] text-xl font-medium">
+            {formatTime(timeLeft)}
+          </p>
         </div>
       </div>
       <audio ref={audioRef} className="audio-element">
