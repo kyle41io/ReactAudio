@@ -1,12 +1,12 @@
 "use client";
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useMemo } from "react";
 import LikeIcon from "../assets/icons/LikeIcon";
 import ShuffleIcon from "../assets/icons/ShuffleIcon";
 import PlayBackIcon from "../assets/icons/PlayBackIcon";
 import PlayForwardIcon from "../assets/icons/PlayForwardIcon";
 import RepeatIcon from "../assets/icons/RepeatIcon";
 import { Icon } from "@iconify/react";
-import { playList } from "../../public/playList";
+import { playList } from "../data/playList";
 
 const MusicRender = () => {
   const [isShuffle, setIsShuffle] = useState(false);
@@ -14,9 +14,7 @@ const MusicRender = () => {
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
   const [progress, setProgress] = useState(0);
-  const [timeLeft, setTimeLeft] = useState(0);
-
-  // const [timeAudio, setTimeAudio] = useState();
+  //const [timeLeft, setTimeLeft] = useState(0);
   const [currentIndex, setCurrentIndex] = useState(0);
   const totalIndex = playList.length - 1;
   const audioSource = playList[currentIndex].path;
@@ -55,7 +53,7 @@ const MusicRender = () => {
 
     const handleTimeUpdate = () => {
       setCurrentTime(audioElement.currentTime);
-      setTimeLeft(audioElement.duration - audioElement.currentTime);
+      //setTimeLeft(audioElement.duration - audioElement.currentTime);
 
       const newProgress =
         (audioElement.currentTime / audioElement.duration) * 100;
@@ -97,15 +95,6 @@ const MusicRender = () => {
     setIsPlaying(true);
     audioElement.play();
   };
-  const formatTime = (time) => {
-    const minutes = Math.floor(time / 60);
-    const seconds = Math.floor(time % 60);
-
-    const formattedMinutes = String(minutes).padStart(2, "0");
-    const formattedSeconds = String(seconds).padStart(2, "0");
-
-    return time ? `${formattedMinutes}:${formattedSeconds}` : "--:--";
-  };
 
   const handlePlayForward = () => {
     const audioElement = audioRef.current;
@@ -137,6 +126,25 @@ const MusicRender = () => {
       setIsShuffle(false);
     }
   };
+  // const currentTime = useMemo(() => {
+  //   const audioElement = audioRef.current;
+  //   return audioElement?.currentTime;
+  // }, []);
+  // const timeLeft = useMemo(() => {
+  //   const audioElement = audioRef.current;
+  //   const duration = audioElement?.duration || 0;
+  //   return duration - currentTime;
+  // }, []);
+
+  const formatTime = (time) => {
+    const minutes = Math.floor(time / 60);
+    const seconds = Math.floor(time % 60);
+
+    const formattedMinutes = String(minutes).padStart(2, "0");
+    const formattedSeconds = String(seconds).padStart(2, "0");
+
+    return time ? `${formattedMinutes}:${formattedSeconds}` : "--:--";
+  };
 
   const getRandomIndex = (currentIndex, totalIndex) => {
     let randomIndex = Math.floor(Math.random() * (totalIndex + 1));
@@ -146,6 +154,10 @@ const MusicRender = () => {
     return randomIndex;
   };
 
+  const timeLeft = useMemo(() => {
+    return audioRef.current ? audioRef.current.duration - currentTime : 0;
+  }, [currentTime]);
+
   return (
     <React.Fragment className="flex flex-col justify-between items-center">
       <div className=" flex justify-center items-center w-[270px] h-[270px] rounded-full bg-[#fea5af3c]">
@@ -154,7 +166,7 @@ const MusicRender = () => {
           style={{
             backgroundImage: `url(${playList[currentIndex].img})`,
           }}
-          className={`w-[250px] h-[250px] rounded-full bg-[#fea5af3c] bg-cover rotate-animation `}
+          className={`w-[250px] h-[250px] rounded-full bg-[#fea5af3c] bg-cover rotate-animation`}
         ></div>
       </div>
 
