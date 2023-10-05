@@ -17,7 +17,7 @@ const MusicRender = () => {
   const [timeLeft, setTimeLeft] = useState(0);
 
   // const [timeAudio, setTimeAudio] = useState();
-  const [currentIndex, setCurrentIndex] = useState(3);
+  const [currentIndex, setCurrentIndex] = useState(0);
   const totalIndex = playList.length - 1;
   const audioSource = playList[currentIndex].path;
 
