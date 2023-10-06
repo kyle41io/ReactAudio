@@ -6,10 +6,8 @@ import PlayBackIcon from "../assets/icons/PlayBackIcon";
 import PlayForwardIcon from "../assets/icons/PlayForwardIcon";
 import RepeatIcon from "../assets/icons/RepeatIcon";
 import { Icon } from "@iconify/react";
-import { useSearchParams } from "next/navigation";
 
 const MusicRender = ({ playList }) => {
-  useSearchParams({});
   const [isShuffle, setIsShuffle] = useState(false);
   const [isRepeat, setIsRepeat] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
@@ -86,6 +84,7 @@ const MusicRender = ({ playList }) => {
     if (isShuffle) {
       const randomIndex = getRandomIndex(currentIndex, totalIndex);
       setCurrentIndex(randomIndex);
+      audioElement.src = playList[randomIndex].path;
     } else {
       const prevIndex = (currentIndex - 1 + playList.length) % playList.length;
       setCurrentIndex(prevIndex);
@@ -101,6 +100,7 @@ const MusicRender = ({ playList }) => {
     if (isShuffle) {
       const randomIndex = getRandomIndex(currentIndex, totalIndex);
       setCurrentIndex(randomIndex);
+      audioElement.src = playList[randomIndex].path;
     } else {
       const nextIndex = (currentIndex + 1) % playList.length;
       setCurrentIndex(nextIndex);
