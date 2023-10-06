@@ -8,20 +8,24 @@ import PlayListIcon from "../assets/icons/PlayListIcon";
 import MusicRender from "./MusicRender";
 import Rectangle5 from "@/app/assets/icons/Rectangle 5.png";
 
-const MusicPlayer = () => {
+const MusicPlayer = ({ playList }) => {
   return (
     <div
       className="w-[430px] h-[932px] mt-[87px] absolute z-10 flex flex-col items-center justify-between bg-[#430020] rounded-3xl bg-[url('../assets/icons/Rectangle 5.png')] overflow-hidden"
       style={{ boxShadow: "8px 8px 24px 0px rgba(0, 0, 0, 0.50)" }}
     >
-      <Image src={Rectangle5} className="absolute inset-y-64 inset-x-64 z-0" />
+      <Image
+        src={Rectangle5}
+        className="absolute inset-y-64 inset-x-64 z-0"
+        alt=""
+      />
       <div className="w-full h-full flex flex-col items-center justify-between px-5">
         <section className="w-full flex items-center justify-between mt-8 ">
           <DropIcon />
           <h1 className="text-[#F5F5F5] text-bold text-xl">English Songs</h1>
           <ThreeDotsIcon />
         </section>
-        <MusicRender />
+        <MusicRender playList={playList} />
         <section className="w-full m-5">
           <div className="flex items-center justify-between">
             <IconDevices2

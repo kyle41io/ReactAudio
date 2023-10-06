@@ -1,22 +1,41 @@
 "use client";
-import React, { Component } from "react";
+import React, { useState } from "react";
+import PlayBackIcon from "../assets/icons/PlayBackIcon";
+import PlayForwardIcon from "../assets/icons/PlayForwardIcon";
 
-export default class extends Component {
-  playAudio() {
-    const audioEl = document.getElementsByClassName("audio-element")[0];
-    audioEl.play();
-  }
+const Example = () => {
+  const [progress, setProgress] = useState(0);
 
-  render() {
-    return (
-      <div>
-        <button onClick={this.playAudio}>
-          <span>Play Audio</span>
-        </button>
-        <audio className="audio-element">
-          <source src="/YouAreTheReason.mp3"></source>
-        </audio>
-      </div>
-    );
-  }
-}
+  const handlePlayBack = () => {
+    setProgress(0);
+  };
+
+  const handlePlayForward = () => {
+    setProgress(0);
+  };
+  return (
+    <div>
+      <button onClick={handlePlayBack}>
+        <PlayBackIcon />
+      </button>
+      <input
+        id="progress"
+        className="w-11/12 accent-pink-500 cursor-pointer mb-2"
+        type="range"
+        value={progress}
+        step="1"
+        min="0"
+        max="100"
+        onChange={(e) => {
+          const newProgress = parseInt(e.target.value);
+          setProgress(newProgress);
+        }}
+      />
+      <button onClick={handlePlayForward}>
+        <PlayForwardIcon />
+      </button>
+    </div>
+  );
+};
+
+export default Example;

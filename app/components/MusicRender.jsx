@@ -6,15 +6,14 @@ import PlayBackIcon from "../assets/icons/PlayBackIcon";
 import PlayForwardIcon from "../assets/icons/PlayForwardIcon";
 import RepeatIcon from "../assets/icons/RepeatIcon";
 import { Icon } from "@iconify/react";
-import { playList } from "../data/playList";
 
-const MusicRender = () => {
+const MusicRender = ({ playList }) => {
   const [isShuffle, setIsShuffle] = useState(false);
   const [isRepeat, setIsRepeat] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
   const [progress, setProgress] = useState(0);
-  //const [timeLeft, setTimeLeft] = useState(0);
+  const [durationTime, setDuratonTime] = useState(0);
   const [currentIndex, setCurrentIndex] = useState(0);
   const totalIndex = playList.length - 1;
   const audioSource = playList[currentIndex].path;
@@ -37,26 +36,26 @@ const MusicRender = () => {
       if (isRepeat) {
         audioElement.currentTime = 0;
       } else if (isShuffle) {
-        //select a new random index
         const randomIndex = getRandomIndex(currentIndex, totalIndex);
         setCurrentIndex(randomIndex);
-        audioElement.src = playList[randomIndex].path;
       } else {
-        // Increase currentIndex by 1
         const nextIndex = (currentIndex + 1) % playList.length;
         setCurrentIndex(nextIndex);
         audioElement.src = playList[nextIndex].path;
       }
       setIsPlaying(true);
+      setProgress(0);
       audioElement.play();
     };
 
     const handleTimeUpdate = () => {
       setCurrentTime(audioElement.currentTime);
-      //setTimeLeft(audioElement.duration - audioElement.currentTime);
+      setDuratonTime(audioElement.duration);
+      let newProgress = 0;
+      if (audioElement.currentTime && audioElement.duration) {
+        newProgress = (audioElement.currentTime / audioElement.duration) * 100;
+      }
 
-      const newProgress =
-        (audioElement.currentTime / audioElement.duration) * 100;
       setProgress(newProgress);
     };
 
@@ -82,34 +81,30 @@ const MusicRender = () => {
   const handlePlayBack = () => {
     const audioElement = audioRef.current;
     if (isShuffle) {
-      //select a new random index
       const randomIndex = getRandomIndex(currentIndex, totalIndex);
       setCurrentIndex(randomIndex);
-      audioElement.src = playList[randomIndex].path;
     } else {
-      // Decrease currentIndex by 1
       const prevIndex = (currentIndex - 1 + playList.length) % playList.length;
       setCurrentIndex(prevIndex);
       audioElement.src = playList[prevIndex].path;
     }
     setIsPlaying(true);
+    setProgress(0);
     audioElement.play();
   };
 
   const handlePlayForward = () => {
     const audioElement = audioRef.current;
     if (isShuffle) {
-      //select a new random index
       const randomIndex = getRandomIndex(currentIndex, totalIndex);
       setCurrentIndex(randomIndex);
-      audioElement.src = playList[randomIndex].path;
     } else {
-      // Increase currentIndex by 1
       const nextIndex = (currentIndex + 1) % playList.length;
       setCurrentIndex(nextIndex);
       audioElement.src = playList[nextIndex].path;
     }
     setIsPlaying(true);
+    setProgress(0);
     audioElement.play();
   };
 
@@ -126,15 +121,6 @@ const MusicRender = () => {
       setIsShuffle(false);
     }
   };
-  // const currentTime = useMemo(() => {
-  //   const audioElement = audioRef.current;
-  //   return audioElement?.currentTime;
-  // }, []);
-  // const timeLeft = useMemo(() => {
-  //   const audioElement = audioRef.current;
-  //   const duration = audioElement?.duration || 0;
-  //   return duration - currentTime;
-  // }, []);
 
   const formatTime = (time) => {
     const minutes = Math.floor(time / 60);
@@ -154,12 +140,8 @@ const MusicRender = () => {
     return randomIndex;
   };
 
-  const timeLeft = useMemo(() => {
-    return audioRef.current ? audioRef.current.duration - currentTime : 0;
-  }, [currentTime]);
-
   return (
-    <React.Fragment className="flex flex-col justify-between items-center">
+    <div className="w-full h-[75%] flex flex-col justify-between items-center">
       <div className=" flex justify-center items-center w-[270px] h-[270px] rounded-full bg-[#fea5af3c]">
         <div
           id="musicImage"
@@ -187,7 +169,7 @@ const MusicRender = () => {
       <div className="w-full flex flex-col items-center">
         <input
           id="progress"
-          className="text-red-600 w-96 h-2 rounded-full bg-blue-500 bg-opacity-50 focus:outline-none focus:bg-opacity-100 cursor-pointer"
+          className="w-11/12 accent-pink-500 cursor-pointer mb-1"
           type="range"
           value={progress}
           step="1"
@@ -205,7 +187,7 @@ const MusicRender = () => {
             {formatTime(currentTime)}
           </p>
           <p className="text-[#fea5af87] text-xl font-medium">
-            {formatTime(timeLeft)}
+            {formatTime(durationTime)}
           </p>
         </div>
       </div>
@@ -236,7 +218,7 @@ const MusicRender = () => {
           <RepeatIcon color={isRepeat ? "#801166" : "#67676740"} />
         </button>
       </div>
-    </React.Fragment>
+    </div>
   );
 };
 
