@@ -196,22 +196,24 @@ const MusicRender = ({ playList }) => {
             {playList[currentIndex].singer}
           </p>
         </div>
-        <div className="flex flex-col w-4 items-end justify-end">
-          {showVolume && (
-            <input
-              className="w-[100px] accent-pink-500 cursor-pointer -rotate-90"
-              type="range"
-              value={volume}
-              step={10}
-              min={0}
-              max={100}
-              onChange={(e) => {
-                const newVolume = parseInt(e.target.value);
-                audioRef.current.volume = newVolume / 100;
-                setVolume(newVolume);
-              }}
-            />
-          )}
+        <div className="flex flex-col w-4 h-40 items-center justify-around">
+          <div className="h-[10px]">
+            {showVolume && (
+              <input
+                className="w-[100px] accent-pink-500 cursor-pointer -rotate-90"
+                type="range"
+                value={volume}
+                step={10}
+                min={0}
+                max={100}
+                onChange={(e) => {
+                  const newVolume = parseInt(e.target.value);
+                  audioRef.current.volume = newVolume / 100;
+                  setVolume(newVolume);
+                }}
+              />
+            )}
+          </div>
           <button onClick={hanldeShowVolume}>{volumnIcon}</button>
         </div>
       </div>
