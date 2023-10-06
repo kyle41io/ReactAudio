@@ -1,11 +1,11 @@
 "use client";
 import React, { useState, useEffect, useRef, useMemo } from "react";
-import LikeIcon from "../assets/icons/LikeIcon";
 import ShuffleIcon from "../assets/icons/ShuffleIcon";
 import PlayBackIcon from "../assets/icons/PlayBackIcon";
 import PlayForwardIcon from "../assets/icons/PlayForwardIcon";
 import RepeatIcon from "../assets/icons/RepeatIcon";
 import { Icon } from "@iconify/react";
+import { IconVolume, IconVolume2, IconVolume3 } from "@tabler/icons-react";
 
 const MusicRender = ({ playList }) => {
   const [isShuffle, setIsShuffle] = useState(false);
@@ -13,6 +13,8 @@ const MusicRender = ({ playList }) => {
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
   const [progress, setProgress] = useState(0);
+  const [volume, setVolume] = useState(50);
+  const [showVolume, setShowVolume] = useState(false);
   const [durationTime, setDuratonTime] = useState(0);
   const [currentIndex, setCurrentIndex] = useState(0);
   const totalIndex = playList.length - 1;
@@ -124,6 +126,33 @@ const MusicRender = ({ playList }) => {
       setIsShuffle(false);
     }
   };
+  let volumnIcon;
+
+  if (volume >= 70) {
+    volumnIcon = (
+      <IconVolume
+        width={40}
+        height={40}
+        className="text-white hover:text-pink-500"
+      />
+    );
+  } else if (volume == 0) {
+    volumnIcon = (
+      <IconVolume3
+        width={40}
+        height={40}
+        className="text-white hover:text-pink-500"
+      />
+    );
+  } else {
+    volumnIcon = (
+      <IconVolume2
+        width={40}
+        height={40}
+        className="text-white hover:text-pink-500"
+      />
+    );
+  }
 
   const formatTime = (time) => {
     const minutes = Math.floor(time / 60);
@@ -141,6 +170,9 @@ const MusicRender = ({ playList }) => {
       randomIndex = Math.floor(Math.random() * (totalIndex + 1));
     }
     return randomIndex;
+  };
+  const hanldeShowVolume = () => {
+    setShowVolume(!showVolume);
   };
 
   return (
@@ -164,9 +196,24 @@ const MusicRender = ({ playList }) => {
             {playList[currentIndex].singer}
           </p>
         </div>
-        <button>
-          <LikeIcon />
-        </button>
+        <div className="flex flex-col w-4 items-end justify-end">
+          {showVolume && (
+            <input
+              className="w-[100px] accent-pink-500 cursor-pointer -rotate-90"
+              type="range"
+              value={volume}
+              step={10}
+              min={0}
+              max={100}
+              onChange={(e) => {
+                const newVolume = parseInt(e.target.value);
+                audioRef.current.volume = newVolume / 100;
+                setVolume(newVolume);
+              }}
+            />
+          )}
+          <button onClick={hanldeShowVolume}>{volumnIcon}</button>
+        </div>
       </div>
 
       <div className="w-full flex flex-col items-center">

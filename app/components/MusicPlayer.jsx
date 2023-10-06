@@ -7,6 +7,7 @@ import ShareIcon from "../assets/icons/ShareIcon";
 import PlayListIcon from "../assets/icons/PlayListIcon";
 import MusicRender from "./MusicRender";
 import Rectangle5 from "@/app/assets/icons/Rectangle 5.png";
+import LikeIcon from "../assets/icons/LikeIcon";
 
 const MusicPlayer = ({ playList }) => {
   return (
@@ -28,12 +29,16 @@ const MusicPlayer = ({ playList }) => {
         <MusicRender playList={playList} />
         <section className="w-full m-5">
           <div className="flex items-center justify-between">
-            <IconDevices2
-              color="white"
-              width={24}
-              height={24}
-              className="cursor-pointer"
-            />
+            <div className="flex items-center justify-between gap-[26px]">
+              {/* <IconDevices2
+                color="white"
+                width={24}
+                height={24}
+                className="cursor-pointer"
+              /> */}
+              <LikeIcon />
+            </div>
+
             <div className="flex items-center justify-between gap-[26px]">
               <ShareIcon />
               <PlayListIcon />
