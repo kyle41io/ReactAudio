@@ -153,7 +153,7 @@ const MusicRender = ({ playList }) => {
       </div>
 
       <div className="w-full min-h-[105px] flex items-center justify-between">
-        <div className="flex flex-col items-start">
+        <div className="flex flex-col items-start gap-2">
           <h2 className="text-white font-bold text-3xl">
             {playList[currentIndex].name}
           </h2>
@@ -172,9 +172,6 @@ const MusicRender = ({ playList }) => {
           className="w-11/12 accent-pink-500 cursor-pointer mb-1"
           type="range"
           value={progress}
-          step="1"
-          min="0"
-          max="100"
           onChange={(e) => {
             const newProgress = parseInt(e.target.value);
             const newTime = (newProgress / 100) * audioRef.current.duration;
@@ -182,6 +179,7 @@ const MusicRender = ({ playList }) => {
             setProgress(newProgress);
           }}
         />
+        <label htmlFor="progress"></label>
         <div className="w-full flex items-center justify-between mt-5 px-3">
           <p className="text-[#fea5af87] text-xl font-medium">
             {formatTime(currentTime)}

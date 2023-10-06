@@ -2,7 +2,6 @@ import Image from "next/image";
 import Rectangle6 from "@/app/assets/icons/Rectangle 6.png";
 import Rectangle8 from "@/app/assets/icons/Rectangle 8.png";
 import MusicPlayer from "./components/MusicPlayer";
-import Example from "./components/Example";
 import { playList } from "./data/playList";
 
 export default function Home() {
@@ -15,8 +14,6 @@ export default function Home() {
         alt=""
       />
       <MusicPlayer playList={playList} />
-      {/* <Example /> */}
-
       <Image
         src={Rectangle8}
         className="absolute inset-y-full -translate-y-full z-0"
