@@ -14,7 +14,8 @@ const MusicRender = ({ playList }) => {
   const [currentTime, setCurrentTime] = useState(0);
   const [progress, setProgress] = useState(0);
   const [volume, setVolume] = useState(50);
-  const [showVolume, setShowVolume] = useState(false);
+  const [isMute, setIsMute] = useState(false);
+  const [currentVolume, setCurrentVolume] = useState(50);
   const [durationTime, setDuratonTime] = useState(0);
   const [currentIndex, setCurrentIndex] = useState(0);
   const totalIndex = playList.length - 1;
@@ -62,6 +63,14 @@ const MusicRender = ({ playList }) => {
       setProgress(newProgress);
     };
 
+    if (isMute === true) {
+      setVolume(0);
+      audioRef.current.volume = 0;
+    } else {
+      setVolume(currentVolume);
+      audioRef.current.volume = currentVolume / 100;
+    }
+
     audioElement.addEventListener("ended", handleAudioEnd);
     audioElement.addEventListener("timeupdate", handleTimeUpdate);
 
@@ -69,7 +78,7 @@ const MusicRender = ({ playList }) => {
       audioElement.removeEventListener("ended", handleAudioEnd);
       audioElement.removeEventListener("timeupdate", handleTimeUpdate);
     };
-  }, [currentIndex, isRepeat, isShuffle, totalIndex]);
+  }, [currentIndex, isRepeat, isShuffle, totalIndex, isMute]);
 
   const handlePlay = () => {
     const audioElement = audioRef.current;
@@ -171,8 +180,8 @@ const MusicRender = ({ playList }) => {
     }
     return randomIndex;
   };
-  const hanldeShowVolume = () => {
-    setShowVolume(!showVolume);
+  const hanldeMute = () => {
+    setIsMute(!isMute);
   };
 
   return (
@@ -198,23 +207,21 @@ const MusicRender = ({ playList }) => {
         </div>
         <div className="flex flex-col w-4 h-40 items-center justify-around pr-4 pb-6">
           <div className="h-[50px]">
-            {showVolume && (
-              <input
-                className="w-[120px] accent-pink-500 cursor-pointer -rotate-90"
-                type="range"
-                value={volume}
-                step={10}
-                min={0}
-                max={100}
-                onChange={(e) => {
-                  const newVolume = parseInt(e.target.value);
-                  audioRef.current.volume = newVolume / 100;
-                  setVolume(newVolume);
-                }}
-              />
-            )}
+            <input
+              className="w-[120px] accent-pink-500 cursor-pointer -rotate-90"
+              type="range"
+              value={volume}
+              step={10}
+              min={0}
+              max={100}
+              onChange={(e) => {
+                setCurrentVolume(parseInt(e.target.value));
+                audioRef.current.volume = currentVolume / 100;
+                setVolume(currentVolume);
+              }}
+            />
           </div>
-          <button onClick={hanldeShowVolume}>{volumnIcon}</button>
+          <button onClick={hanldeMute}>{volumnIcon}</button>
         </div>
       </div>
 
